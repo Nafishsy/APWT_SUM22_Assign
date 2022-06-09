@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Details</title>
-</head>
-<body>
-    <h2>User Details</h2>
-</body>
-</html>
+@extends('layouts.userBar')
+
+@section('content')
+
+    <center>
+        <h4>Username: {{$user->name}}</h4>
+        <h4>Email: {{$user->email}}</h4>
+        <h4>Role: {{$user->type}}</h4>
+    </center>
+
+@endsection

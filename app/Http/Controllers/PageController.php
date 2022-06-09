@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Account;
+use Illuminate\Validation\Rules\Password;
 
 class PageController extends Controller
 {
     function home()
     {
+        session()->forget('c_id');
         return view('Page.home');
     }
 
@@ -23,14 +25,20 @@ class PageController extends Controller
             [
                 "name"=>"required|max:20|min:5",
                 "email"=>"required|email|unique:users,email",
-                "password"=>"required|min:8",
-                "conf_password"=>"required|min:8|same:password"
+                'password' => [Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()],
+                "conf_password"=>"same:password"
             ],
         
             [
                 "required"=>"Please provide fill this field",
                 "name.max"=>"Name should not exceed 10 characters",
-                'conf_password.same'=> "Password & confirm password does not match"
+                'conf_password.same'=> "Password & confirm password does not match",
+                'password' => 'hmm'
                 
             ]);
             $user = new account();
@@ -39,7 +47,7 @@ class PageController extends Controller
             $user->password =$req->password;
             $user->save();
             
-        return view('Page.login');
+        return redirect('/');
         
     }
 
@@ -49,6 +57,7 @@ class PageController extends Controller
     }
 
     function loginSubmit(Request $req){
+
         $this->validate($req,
             [
 
@@ -62,27 +71,34 @@ class PageController extends Controller
                 'password.exists'=>'No account is found using this password'
                 
             ]);
-           /* $st = new Student();
-            $st->name = $req->name;
-            $st->email =$req->email;
-            $st->dob = $req->dob;
-            $st->save();*/
             
-            $user = account::where('email','=',$req->email)->first();   
-             
-        return view('user.dashboard')->with('user',$user);
+            $users = account::all();
+            $crUser = account::where('email','=',$req->email)->first();
+            session(['c_id' => $crUser->id]); 
+            
+        if ($crUser->type=='Admin') {
+            return view('Admin.dashboard')->with('users',$users);
+        } else {
+            return view('User.dashboard')->with('users',$users);
+        }
+        
+        
+
         
     }
 
-    /*function dashboard()
-    {
-        view('user.dashboard')
-    }
-    */
     function details($id)
     {
-        $user = DB::table('users')->where('name', 'John')->first();
+        $user = account::where('id','=',$id)->first(); 
         
-       return vieww('user.detials');// -> with('user',$user);
+       return view('user.userDetails') -> with('user',$user);
+    }
+
+    function dashboard()
+    {
+        
+        $users = account::all();   
+             
+        return view('User.dashboard')->with('users',$users);
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.userBar')
     @section('content')
 
-   <h1>Current User: {{$value = session('c_id')}}</h1> 
+   <h1>Salam Admin Bhai</h1> 
 <table border="1" width='100%'>
     <tr>
         <th>Name </th>

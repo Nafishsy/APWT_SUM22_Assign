@@ -19,3 +19,4 @@ Route::post('/register',[PageController::class,'createSubmit'])->name('Page.subm
 Route::get('/login',[PageController::class,'login'])->name('Page.login');
 Route::post('/login',[PageController::class,'loginSubmit'])->name('Page.loginSubmit');
 Route::get('/user/details/{id}',[PageController::class,'details'])->name('User.details');
+Route::get('/user/dashboard/',[PageController::class,'dashboard'])->name('User.dashboard');
